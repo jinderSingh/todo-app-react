@@ -1,0 +1,56 @@
+@media (prefers-reduced-motion: no-preference) {
+  ._header_thumbnail {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+._header {
+  background-color: rgb(49, 57, 77);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+._header_thumbnail {
+  flex: 0 0 100px;
+}
+
+._navbar {
+  color: white;
+  display: flex;
+  flex-flow: row wrap;
+  flex: 1;
+  padding: 0.5em;
+}
+
+._navbar_links_wrapper {
+  list-style: none;
+  text-decoration: none;
+  padding: 0;
+  display: flex;
+  flex-flow: row wrap;
+  flex: 1;
+}
+
+._navbar_links_item {
+  text-decoration: none;
+  background-color: transparent;
+}
+
+._navbar_links_link {
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
