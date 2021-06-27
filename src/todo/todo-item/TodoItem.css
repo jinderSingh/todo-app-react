@@ -1,0 +1,20 @@
+._todo_list_item {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.5em;
+  flex: 1 0 100%;
+  position: relative;
+  padding: .5em;
+}
+
+._todo_children_container {
+  margin-top: 0.5em;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+._todo_description {
+  text-align: justify;
+}

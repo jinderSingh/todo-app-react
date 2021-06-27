@@ -128,6 +128,14 @@ textarea::placeholder {
   transform: scale(0.95);
 }
 
+._btn_round {
+  border: none;
+  border-radius: 50%;
+  padding: 0.5em .75em;
+  background: transparent;
+  cursor: pointer;
+}
+
 ._btn_success {
   background-color: rgb(78, 161, 78);
   color: white;
@@ -138,17 +146,42 @@ textarea::placeholder {
   color: white;
 }
 
-._text_danger {
-  color: rgb(209, 75, 75);
-}
-
 ._btn_info {
   background-color: rgb(4, 135, 195);
   color: white;
 }
 
-.align-self-end {
+._btn_warn {
+  background-color: rgb(243, 203, 26);
+}
+
+._text_danger {
+  color: rgb(209, 75, 75);
+}
+
+._align_self_end {
   align-self: flex-end;
+}
+
+._d_flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+._gap_1 {
+  gap: 1em;
+}
+
+._flex_end {
+  justify-content: flex-end;
+}
+
+._flex_1 {
+  flex: 1 1 auto;
+}
+
+._text_bold {
+  font-weight: bold;
 }
 
 @media screen and (max-width: 600px) {

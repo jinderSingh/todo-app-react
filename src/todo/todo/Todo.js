@@ -1,44 +1,13 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import "./Todo.css";
 
-function Todo() {
-  const initialValue = { title: "", description: "", completed: false };
-  const [todo, setTodo] = useState({ ...initialValue });
-  const { todoId } = useParams();
-  const apiUri = "/api/v1/todos";
-
-  useEffect(() => {
-    if (todoId) {
-      fetch(`${apiUri}/${todoId}`)
-        .then((res) => res.json())
-        .then((res) => setTodo(res));
-    }
-  }, [todoId]);
-
+function Todo({ todo, children, changeCallback }) {
   function handleChanges({ target }) {
     const value = target.type === "checkbox" ? target.checked : target.value;
-    setTodo({ ...todo, [target.name]: value });
-  }
-
-  async function saveHandler() {
-    try {
-      await fetch(apiUri, {
-        method: "POST",
-        body: JSON.stringify(todo),
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function resetTodo() {
-    setTodo({ ...initialValue });
+    changeCallback({ ...todo, [target.name]: value });
   }
 
   return (
-    <form action="#" className="_form">
+    <form action="#" onSubmit={e => e.preventDefault()} className="_form">
       <div className="_form_row">
         <div className="_input_container">
           <label htmlFor="title">Title</label>
@@ -49,6 +18,7 @@ function Todo() {
             name="title"
             id="title"
             onChange={handleChanges}
+            required
           />
         </div>
 
@@ -63,6 +33,7 @@ function Todo() {
             id="description"
             value={todo.description}
             onChange={handleChanges}
+            required
           ></textarea>
         </div>
 
@@ -78,18 +49,7 @@ function Todo() {
           />
         </div>
       </div>
-      <div className="_form_actions_container">
-        <button
-          className="_btn _btn_success"
-          type="button"
-          onClick={saveHandler}
-        >
-          Save
-        </button>
-        <button className="_btn _btn_danger" type="button" onClick={resetTodo}>
-          Clear
-        </button>
-      </div>
+      {children}
     </form>
   );
 }
