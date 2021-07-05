@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import Todo from "../todo/Todo";
 import TodoItem from "../todo-item/TodoItem";
 import "./Todos.css";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  ADD_TODO,
+  DELETE_TODO,
+  LIST_TODO,
+  UPDATE_TODO,
+} from "../../shared/queries/todo.query";
 
 function Todos() {
   const initialValue = {
@@ -11,51 +18,47 @@ function Todos() {
     id: null,
   };
 
-  const [todos, setTodos] = useState([]);
+  const queriesToRefetch = [{ query: LIST_TODO }];
+
   const [todo, setTodo] = useState({ ...initialValue });
   const [displayForm, setDisplayForm] = useState(false);
-
-  const apiUri = `/api/v1/todos`;
-
-  useEffect(() => fetchTodos(), []);
+  const { data } = useQuery(LIST_TODO, {
+    fetchPolicy: "network-only",
+  });
+  const [addTodo] = useMutation(ADD_TODO, { refetchQueries: queriesToRefetch });
+  const [updateTodo] = useMutation(UPDATE_TODO, {
+    refetchQueries: queriesToRefetch,
+  });
+  const [deleteTodo] = useMutation(DELETE_TODO, {
+    refetchQueries: queriesToRefetch,
+  });
 
   const handleFormVisibility = (item) => {
     setTodo({ ...(item || initialValue) });
     setDisplayForm(true);
   };
 
-  const handleDelete = async (id) => {
-    await fetch(`${apiUri}/${id}`, { method: "DELETE" });
-    fetchTodos();
+  const handleDelete = (id) => {
+    deleteTodo({ variables: { id } });
   };
 
-  const saveHandler = async () => {
-    let method = "POST";
-    let uri = apiUri;
+  const saveHandler = () => {
+    const { id, ...others } = todo;
     if (todo.id) {
-      method = "PUT";
-      uri = `${uri}/${todo.id}`;
+      const updatedTodo = ["title", "description", "completed"].reduce(
+        (prev, next) => {
+          prev[next] = todo[next];
+          return prev;
+        },
+        {}
+      );
+      updateTodo({ variables: { id: todo.id, todo: updatedTodo } });
+      return;
     }
-    try {
-      await fetch(uri, {
-        method,
-        body: JSON.stringify(todo),
-        headers: { "Content-Type": "application/json" },
-      });
-      fetchTodos();
-      setTodo({ ...initialValue });
-    } catch (error) {
-      console.log(error);
-    }
+    addTodo({ variables: { todo: { ...others } } });
   };
 
   const resetTodo = () => setTodo({ ...initialValue, id: todo && todo.id });
-
-  const fetchTodos = async () =>
-    fetch(apiUri, { headers: { "Content-Type": "application/json" } })
-      .then((res) => res && res.json())
-      .then((res) => setTodos(res))
-      .catch((error) => console.log(error));
 
   return (
     <div className="_todo_content_container">
@@ -70,7 +73,7 @@ function Todos() {
         </div>
         <h1 className="_todo_list_header">Todos</h1>
         <ul className="_todo_list">
-          {(todos || []).map((el) => (
+          {((data && data.todos) || []).map((el) => (
             <div className="_d_flex _todo_item_wrapper" key={el.id}>
               <div className="_d_flex _gap_1 _flex_end _flex_1">
                 <button
